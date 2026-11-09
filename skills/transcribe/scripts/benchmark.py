@@ -1,12 +1,13 @@
 #!/usr/bin/env -S uv run --quiet --with parakeet-mlx --script
 """Score a candidate model against the one in use, on videos already in the store.
 
-    ./benchmark.py mlx-community/parakeet-tdt-0.6b-v3
+    ./benchmark.py mlx-community/parakeet-tdt-0.6b-v2
 
-The store is the test set: its transcripts are the current model's output, and each
-file's frontmatter carries the uploader's own chapters, tags and title. Those are
-ground truth for proper-noun spelling in a way the audio never is -- the uploader
-wrote "Homebrew", so a model that emits "homebrew" is wrong and can be scored.
+The store is the test set: its transcripts are the output of the model each file's
+`source:` names, and each file's frontmatter carries the uploader's own chapters, tags
+and title. Those are ground truth for proper-noun spelling in a way the audio never
+is -- the uploader wrote "Homebrew", so a model that emits "homebrew" is wrong and
+can be scored.
 
 Scored on casing RATE, not presence. A model that writes "Homebrew" once at the start
 of a sentence and "homebrew" eight times mid-sentence has found the term but gets it
@@ -17,7 +18,7 @@ import re, subprocess, sys, time
 from pathlib import Path
 
 STORE = Path.home() / ".agent-work" / "transcribe"
-CURRENT = "mlx-community/parakeet-tdt-0.6b-v2"   # what the skill uses; a person changes it
+CURRENT = "mlx-community/parakeet-tdt-0.6b-v3"   # what the skill uses; a person changes it
 N = 3
 
 STOP = {"The","This","That","A","An","In","On","At","For","To","Of","And","But","Or",
