@@ -125,7 +125,7 @@ the run is too small to draw a throttle anyway.
 ```python
 from parakeet_mlx import from_pretrained
 
-model = from_pretrained("mlx-community/parakeet-tdt-0.6b-v2")
+model = from_pretrained("mlx-community/parakeet-tdt-0.6b-v3")
 result = model.transcribe("VIDEO_ID.wav", chunk_duration=120.0, overlap_duration=15.0)
 ```
 
@@ -159,7 +159,7 @@ was_live: false
 resolution: 2560x1440
 fps: 30
 thumbnail: https://i.ytimg.com/vi/VIDEO_ID/maxresdefault.jpg
-source: parakeet-tdt-0.6b-v2
+source: parakeet-tdt-0.6b-v3
 transcribed: 2026-08-04
 words: 2420
 skill: transcribe@OWNER/REPO
@@ -301,35 +301,41 @@ raises an exception instead of freezing the Mac.
 
 ## The model is fixed
 
-`parakeet-tdt-0.6b-v2` is not a default, it is a result. It beat every other MLX build
-on English proper nouns, and its own multilingual successor `v3` loses to it: v3
-capitalises a product name only at the start of a sentence, writing "homebrew"
-mid-sentence where v2 writes "Homebrew". Spreading capacity across 25 languages costs
-English casing.
+`parakeet-tdt-0.6b-v3` is not a default, it is a decision. The skill's owner chose it
+over `v2` knowing the casing result below. Two runs on store videos are the record:
+
+```
+                          casing rate   Homebrew
+earlier run   v2          43.5%         10/12
+              v3          38.2%          4/12
+later run     v2          73.0%
+(3 videos)    v3          73.1%
+```
+
+The earlier run is where v3's cost showed: it capitalises a product name only at the
+start of a sentence, writing "homebrew" mid-sentence where v2 writes "Homebrew".
+Spreading capacity across 25 languages costs English casing. The later run scored the
+two level.
+
+Scoring is a **casing rate, not a word count**. A model that writes "Homebrew" once
+sentence-initially and "homebrew" eight times has the term but gets it wrong eight
+times in nine, and only a rate sees that. On the earlier run, counting distinct terms
+scored v3 *above* v2; the rate put it 5.3 points below, which matched reading the
+transcripts.
 
 Nothing re-decides this on its own. When someone asks whether something better exists:
 
 ```bash
 scripts/check-models.sh                                   # what is out there
-scripts/benchmark.py mlx-community/parakeet-tdt-0.6b-v3   # candidate vs the one in use
+scripts/benchmark.py mlx-community/parakeet-tdt-0.6b-v2   # candidate vs the one in use
 ```
 
 The store is the test set. Its transcripts are the current model's output, and each
 file's frontmatter holds the uploader's own title, chapters and tags — ground truth
 for spelling that the audio itself never gives you.
 
-Scoring is a **casing rate, not a word count**. A model that writes "Homebrew" once
-sentence-initially and "homebrew" eight times has the term but gets it wrong eight
-times in nine, and only a rate sees that. Counting distinct terms scores v3 *above*
-v2; the rate puts it 5.3 points below, which matches reading the transcripts:
-
-```
-mlx-community/parakeet-tdt-0.6b-v2   43.5%   Homebrew 10/12
-mlx-community/parakeet-tdt-0.6b-v3   38.2%   Homebrew  4/12
-```
-
 Weights are not the only gate. `parakeet-unified-en-0.6b` is English-only and the
-likeliest thing to beat v2; MLX conversions of it already exist, and `parakeet-mlx`
+likeliest thing to beat v3; MLX conversions of it already exist, and `parakeet-mlx`
 0.5.2 still answers `Model is not supported yet!`. So the release to wait for is a
 runtime one.
 
