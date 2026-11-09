@@ -48,7 +48,7 @@ def main():
 
     files, own = [], []
     for f in sorted(STORE.glob("*.md")):
-        head, body = f.read_text().split("\n---\n\n", 1)
+        head, body = re.split(r"\n---\n", f.read_text(), maxsplit=1)
         m = re.search(r"^source: (\S+)$", head, re.M)
         src = m.group(1) if m else "unknown"
         if src == cand.split("/")[-1]:
@@ -57,11 +57,13 @@ def main():
         files.append((head, body, src))
         if len(files) == N:
             break
-    for name in own:
-        print(f"left out  {name}: written by the candidate itself")
+    if own:
+        print(f"left out {len(own)} file{'s' * (len(own) != 1)} written by the candidate"
+              f" itself: {', '.join(own[:3])}{', ...' if len(own) > 3 else ''}")
     if not files:
         sys.exit("no stored file to score against -- the store is the test set,"
-                 " and the candidate wrote every file in it")
+                 " and the candidate wrote every file in it" if own else
+                 "store is empty -- transcribe something first, the store is the test set")
 
     from parakeet_mlx import from_pretrained
     try:
@@ -87,7 +89,7 @@ def main():
 
         tset = terms(head)
         r = {}
-        for label, text in (("cur", body), ("new", new)):
+        for label, text in (("stored", body), ("new", new)):
             ok = bad = 0; misspelled = []
             for t in tset:
                 said = re.findall(rf"\b{re.escape(t)}\b", text, re.I)
@@ -100,7 +102,7 @@ def main():
             r[label] = (ok, bad, sorted(misspelled))
         rows.append((vid, src, r, len(tset)))
         t = tot.setdefault(src, [0, 0, 0, 0, 0])
-        t[0] += r["cur"][0]; t[1] += r["cur"][1]
+        t[0] += r["stored"][0]; t[1] += r["stored"][1]
         t[2] += r["new"][0]; t[3] += r["new"][1]; t[4] += 1
 
     def rate(ok, bad):
@@ -108,9 +110,9 @@ def main():
 
     print(f"\n{'video':14}{'stored':>12}{'candidate':>12}")
     for vid, src, r, t in rows:
-        print(f"{vid:14}{rate(*r['cur'][:2]):>11.1%}{rate(*r['new'][:2]):>12.1%}"
+        print(f"{vid:14}{rate(*r['stored'][:2]):>11.1%}{rate(*r['new'][:2]):>12.1%}"
               f"   (stored by {src}, {t} terms)")
-        for label, who in (("cur", src), ("new", "candidate")):
+        for label, who in (("stored", src), ("new", "candidate")):
             if r[label][2]:
                 print(f"   {who} miscased: {', '.join(r[label][2])}")
 

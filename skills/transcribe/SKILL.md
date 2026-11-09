@@ -332,9 +332,9 @@ scripts/benchmark.py mlx-community/parakeet-tdt-0.6b-v2   # candidate vs the sto
 
 The store is the test set. Each file's frontmatter holds the uploader's own title,
 chapters and tags: ground truth for spelling that the audio itself never gives you.
-The baseline is the stored text, labelled and totalled by the model each file's
-`source:` names: a file written before the switch scores as v2 until it is transcribed
-again. A file the candidate itself wrote is left out and named in the output, since it
+The baseline is the stored text, labelled and totalled by each file's `source:` (a
+model, or `subtitles` for a hand-written track): a machine transcript written before
+the switch scores as v2 until it is transcribed again. A file the candidate itself wrote is left out and named in the output, since it
 would score the candidate against itself.
 
 Weights are not the only gate. `parakeet-unified-en-0.6b` is English-only and the
