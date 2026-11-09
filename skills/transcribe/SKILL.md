@@ -327,12 +327,14 @@ Nothing re-decides this on its own. When someone asks whether something better e
 
 ```bash
 scripts/check-models.sh                                   # what is out there
-scripts/benchmark.py mlx-community/parakeet-tdt-0.6b-v2   # candidate vs the one in use
+scripts/benchmark.py mlx-community/parakeet-tdt-0.6b-v2   # candidate vs the stored text
 ```
 
-The store is the test set. Its transcripts are the current model's output, and each
-file's frontmatter holds the uploader's own title, chapters and tags — ground truth
-for spelling that the audio itself never gives you.
+The store is the test set. Each file's frontmatter holds the uploader's own title,
+chapters and tags: ground truth for spelling that the audio itself never gives you.
+The baseline is the stored text, the output of whatever model the file's `source:`
+names: a file written before the switch holds v2's text until it is transcribed again,
+so a v2 candidate run against it scores v2 against itself.
 
 Weights are not the only gate. `parakeet-unified-en-0.6b` is English-only and the
 likeliest thing to beat v3; MLX conversions of it already exist, and `parakeet-mlx`

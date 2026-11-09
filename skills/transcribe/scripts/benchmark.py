@@ -3,10 +3,11 @@
 
     ./benchmark.py mlx-community/parakeet-tdt-0.6b-v2
 
-The store is the test set: its transcripts are the current model's output, and each
-file's frontmatter carries the uploader's own chapters, tags and title. Those are
-ground truth for proper-noun spelling in a way the audio never is -- the uploader
-wrote "Homebrew", so a model that emits "homebrew" is wrong and can be scored.
+The store is the test set: its transcripts are the output of the model each file's
+`source:` names, and each file's frontmatter carries the uploader's own chapters, tags
+and title. Those are ground truth for proper-noun spelling in a way the audio never
+is -- the uploader wrote "Homebrew", so a model that emits "homebrew" is wrong and
+can be scored.
 
 Scored on casing RATE, not presence. A model that writes "Homebrew" once at the start
 of a sentence and "homebrew" eight times mid-sentence has found the term but gets it
