@@ -26,7 +26,7 @@ const paragraphsOf = (body: string) =>
 export function text({ greeting, body, signoff = "Thanks,", name, links = [] }: PersonalProps) {
   const blocks = [...(greeting ? [greeting] : []), ...paragraphsOf(body)]
   const signature = [signoff, name].join("\n")
-  const socials = links.map((l) => `${l.label} (${l.href})`).join(" • ")
+  const socials = links.map((l) => `${l.label} (${l.href})`).join(" · ")
   return [...blocks, signature, ...(socials ? [socials] : [])].join("\n\n") + "\n"
 }
 
@@ -57,7 +57,7 @@ export default function Personal({ greeting, body, signoff = "Thanks,", name, li
           <p>
           {links.map((l, i) => (
             <Fragment key={l.href}>
-              {i > 0 && " • "}
+              {i > 0 && " · "}
               <a href={l.href}>{l.label}</a>
             </Fragment>
           ))}
