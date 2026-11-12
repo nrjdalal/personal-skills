@@ -54,7 +54,7 @@ export default function Personal({ greeting, body, signoff = "Thanks,", name, li
           {links.length > 0 && <br />}
           {links.map((l, i) => (
             <Fragment key={l.href}>
-              {i > 0 && " · "}
+              {i > 0 && " • "}
               <a href={l.href}>{l.label}</a>
             </Fragment>
           ))}
