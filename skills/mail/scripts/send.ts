@@ -19,14 +19,18 @@ const { values: a } = parseArgs({
     subject: { type: "string" },
     text: { type: "string" },
     html: { type: "string" },
+    "html-file": { type: "string" },
+    "text-file": { type: "string" },
     cc: { type: "string", default: "" },
     "in-reply-to": { type: "string" },
     references: { type: "string" },
   },
 })
-if (!a.to || !a.subject || !(a.text || a.html)) {
+const text = a.text ?? (a["text-file"] ? await Bun.file(a["text-file"]).text() : undefined)
+const html = a.html ?? (a["html-file"] ? await Bun.file(a["html-file"]).text() : undefined)
+if (!a.to || !a.subject || !(text || html)) {
   console.error(
-    "usage: send.ts --to <addr[,addr]> --subject <s> --text <body> [--html] [--cc] [--in-reply-to] [--references]",
+    "usage: send.ts --to <addr[,addr]> --subject <s> --text <body> [--html] [--html-file] [--text-file] [--cc] [--in-reply-to] [--references]",
   )
   process.exit(2)
 }
@@ -49,8 +53,8 @@ const headers: Record<string, string> = {}
 if (a["in-reply-to"]) headers["In-Reply-To"] = a["in-reply-to"]
 if (a.references) headers["References"] = a.references
 const extras = {
-  ...(a.text && { text: a.text }),
-  ...(a.html && { html: a.html }),
+  ...(text && { text }),
+  ...(html && { html }),
   ...(Object.keys(headers).length && { headers }),
 }
 const from = env("MAIL_FROM")

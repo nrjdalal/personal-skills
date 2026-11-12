@@ -1,9 +1,9 @@
 ---
-name: domain-mail
-description: Send and reply to email as a custom-domain address (you@yourdomain.com) through Cloudflare Email Sending, with replies landing threaded in a personal Gmail inbox. Use when sending mail from a domain alias, replying to someone in an existing thread from that alias, or testing that domain mail threads correctly.
+name: mail
+description: Send and reply to email as a custom-domain address (you@yourdomain.com) through Cloudflare Email Sending, with replies landing threaded in a personal Gmail inbox, and render branded HTML with React Email templates. Use when sending mail from a domain alias, replying in a thread from that alias, testing that domain mail threads correctly, or rendering or sending an email template.
 ---
 
-# Domain mail
+# Mail
 
 Outgoing mail leaves through Cloudflare Email Sending as an address on your domain, by default through a small send Worker ([cloudflare-email-sending](https://github.com/nrjdalal/cloudflare-email-sending)) that CCs the inbox for you; the raw REST API is the fallback. Replies come back through Cloudflare Email Routing, which forwards the alias to a personal **inbox** (e.g. a Gmail account). The inbox is where the whole conversation lives.
 
@@ -88,6 +88,21 @@ Run this once after setup or any routing change. Number each body ("Step 1 of 3"
 3. Reply from the alias with the threading headers, CC the inbox.
 
 **Done when:** all three messages sit in one thread in the inbox, and step 2's raw headers show `X-Forwarded-For: <alias> <inbox>` (proof it arrived by routing, not by CC).
+
+## Templates
+
+React Email templates live in [`templates/emails/`](templates/emails/). Install once, then render to HTML and send the file.
+
+```
+cd templates && bun i
+bun scripts/render.ts notice --out /tmp/notice.html --text
+bun scripts/send.ts --to them@example.com --subject "Hello" \
+  --html-file /tmp/notice.html --text-file /tmp/notice.txt
+```
+
+`--props file.json` overrides the template's PreviewProps. Preview locally with `cd templates && bunx react-email dev` (serves `emails/`).
+
+**Done when:** render writes HTML (and a sibling `.txt` with `--text`), and a send with `--html-file` returns a message id.
 
 ## Gotchas
 
