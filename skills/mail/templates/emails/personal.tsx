@@ -30,7 +30,7 @@ const para = {
 
 const muted = {
   margin: "0",
-  fontSize: "13px",
+  fontSize: "15px",
   lineHeight: "1.6",
   color: "#71717a",
 }
@@ -100,6 +100,7 @@ Personal.PreviewProps = {
   signoff: "Thanks,",
   name: "Neeraj Dalal",
   links: [
+    { label: "Website", href: "https://zerostarter.dev/hire" },
     { label: "GitHub", href: "https://github.com/nrjdalal" },
     { label: "LinkedIn", href: "https://linkedin.com/in/nrjdalal" },
   ],
