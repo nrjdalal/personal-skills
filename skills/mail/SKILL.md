@@ -93,14 +93,17 @@ Run this once after setup or any routing change. Number each body ("Step 1 of 3"
 
 React Email templates live in [`templates/emails/`](templates/emails/). Install once, then render to HTML and send the file.
 
+- `personal` is the default for one-to-one mail: plain and text-first, with a signature of name plus links. Its props are `greeting`, `body` (blank line between paragraphs), `signoff` (default "Thanks,"), `name` and `links`.
+- `notice` is for announcements: a header band, info cards and a button.
+
 ```
 cd templates && bun i
-bun scripts/render.ts notice --out /tmp/notice.html --text
+bun scripts/render.ts personal --props msg.json --out /tmp/msg.html --text
 bun scripts/send.ts --to them@example.com --subject "Hello" \
-  --html-file /tmp/notice.html --text-file /tmp/notice.txt
+  --html-file /tmp/msg.html --text-file /tmp/msg.txt
 ```
 
-`--props file.json` overrides the template's PreviewProps. Preview locally with `cd templates && bunx react-email dev` (serves `emails/`).
+`--props file.json` overrides the template's PreviewProps. Always send the text copy too. A template that exports `text(props)` writes its own, so its spacing matches the HTML; otherwise React Email derives one. Preview locally with `cd templates && bunx react-email dev` (serves `emails/`).
 
 **Done when:** render writes HTML (and a sibling `.txt` with `--text`), and a send with `--html-file` returns a message id.
 

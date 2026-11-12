@@ -5,6 +5,7 @@
  * Run: bun scripts/render.ts <template> [--props file.json] [--out file.html] [--text]
  * Template files live in templates/emails/<template>.tsx.
  * With --out and --text, plain text is written next to the HTML as <name>.txt.
+ * A template may export `text(props)` for its plain-text copy; otherwise React Email derives one.
  * Resolves React Email from templates/node_modules (run `bun i` there first).
  */
 import { existsSync } from "node:fs"
@@ -46,6 +47,8 @@ const [{ createElement }, { render }] = await Promise.all([
 ])
 const mod = (await import(pathToFileURL(file).href)) as {
   default: ComponentType<Record<string, unknown>> & { PreviewProps?: Record<string, unknown> }
+  /** Optional hand-written plain-text copy, so its spacing matches the HTML. */
+  text?: (props: Record<string, unknown>) => string
 }
 const Template = mod.default
 const props = a.props
@@ -63,7 +66,7 @@ if (a.out) {
 }
 
 if (a.text) {
-  const text = await render(element, { plainText: true })
+  const text = mod.text ? mod.text(props) : await render(element, { plainText: true })
   if (a.out) {
     const p = parse(a.out)
     const textPath = join(p.dir, `${p.name}.txt`)
