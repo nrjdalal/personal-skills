@@ -38,7 +38,7 @@ Content-Type: application/json
 }
 ```
 
-Or run [`scripts/send.py`](scripts/send.py). Cloudflare assigns the Message-ID and returns it in `result.message_id`; record it. A custom `Message-ID` header is rejected (`10202 email.invalid`), so let Cloudflare set it.
+Or run [`scripts/send.ts`](scripts/send.ts) (Bun, or Node 22.18+). Cloudflare assigns the Message-ID and returns it in `result.message_id`; record it. A custom `Message-ID` header is rejected (`10202 email.invalid`), so let Cloudflare set it.
 
 **Done when:** the response is `success: true`, both recipients are in `result.queued`, and the inbox shows the CC copy.
 
@@ -51,7 +51,7 @@ Or run [`scripts/send.py`](scripts/send.py). Cloudflare assigns the Message-ID a
    - `headers`: `{"In-Reply-To": "<their Message-ID>", "References": "<their References> <their Message-ID>"}`
 
 ```
-python3 scripts/send.py --to them@example.com --subject "Re: Hello" \
+bun scripts/send.ts --to them@example.com --subject "Re: Hello" \
   --text "Thanks!" --in-reply-to "<their-id@mail.gmail.com>" \
   --references "<first-id@yourdomain.com> <their-id@mail.gmail.com>"
 ```
