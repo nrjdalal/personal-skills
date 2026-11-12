@@ -28,6 +28,7 @@ Use `.claude/skills/` inside a repo instead to scope it to one project.
 | Command | What it does |
 | :-- | :-- |
 | [`/transcribe`](./skills/transcribe) | Transcribe YouTube videos locally on Apple Silicon with yt-dlp and Parakeet |
+| [`/domain-mail`](./skills/domain-mail) | Send and reply as a custom-domain address via Cloudflare Email Sending, threaded in your Gmail |
 
 ## Layout
 
