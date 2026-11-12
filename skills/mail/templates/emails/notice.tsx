@@ -63,7 +63,7 @@ const defaults = {
   body: "This is a React Email template for messages sent from @nrjdalal.com aliases. The Worker delivers the mail and CCs the inbox automatically, so the conversation lives in Gmail from the first message.",
   cards: [
     { label: "Sending", text: "Worker on Cloudflare Email Service", color: green },
-    { label: "Routing", text: "Replies forward to nd941z", color: blue },
+    { label: "Routing", text: "Replies forward to your inbox", color: blue },
     { label: "Threading", text: "In-Reply-To and References", color: orange },
   ],
   cta: { label: "Visit nrjdalal.com", href: "https://nrjdalal.com" },
