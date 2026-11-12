@@ -64,7 +64,7 @@ export default function Personal({
       <Head />
       <Preview>{preview ?? paragraphs[0] ?? ""}</Preview>
       <Body style={{ margin: 0, padding: 0, backgroundColor: "#ffffff", fontFamily: font }}>
-        <Container style={{ maxWidth: "560px", padding: "24px 20px", margin: "0" }}>
+        <Container style={{ maxWidth: "560px", padding: "0", margin: "0" }}>
           {greeting && <Text style={para}>{greeting}</Text>}
           {paragraphs.map((p, i) => (
             <Text key={i} style={{ ...para, whiteSpace: "pre-line" }}>
