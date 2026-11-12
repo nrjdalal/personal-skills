@@ -1,4 +1,6 @@
-import { Body, Container, Head, Html, Link, Preview, Section, Text } from "@react-email/components"
+// Raw, text-first personal email: plain tags only, no styles, tables or wrappers,
+import { Fragment } from "react"
+// so the mail client's own font and spacing apply, like a hand-typed message.
 
 export type PersonalLink = {
   label: string
@@ -6,33 +8,12 @@ export type PersonalLink = {
 }
 
 export type PersonalProps = {
-  /** Inbox preview line; defaults to the first paragraph. */
-  preview?: string
   greeting?: string
   /** Paragraphs separated by a blank line. */
   body: string
   signoff?: string
   name: string
-  /** One quiet line under the name, e.g. a role or site. */
-  tagline?: string
   links?: PersonalLink[]
-}
-
-const font =
-  "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
-
-const para = {
-  margin: "0 0 16px",
-  fontSize: "15px",
-  lineHeight: "1.6",
-  color: "#18181b",
-}
-
-const muted = {
-  margin: "0",
-  fontSize: "15px",
-  lineHeight: "1.6",
-  color: "#71717a",
 }
 
 const paragraphsOf = (body: string) =>
@@ -41,56 +22,45 @@ const paragraphsOf = (body: string) =>
     .map((p) => p.trim())
     .filter(Boolean)
 
-/** Plain-text copy laid out like the HTML: blank line between paragraphs, signature lines tight. */
-export function text({ greeting, body, signoff = "Thanks,", name, tagline, links = [] }: PersonalProps) {
+/** Plain-text copy laid out like the HTML. */
+export function text({ greeting, body, signoff = "Thanks,", name, links = [] }: PersonalProps) {
   const blocks = [...(greeting ? [greeting] : []), ...paragraphsOf(body)]
-  const signature = [signoff, name, ...(tagline ? [tagline] : []), ...links.map((l) => `${l.label}: ${l.href}`)]
+  const signature = [signoff, name, ...links.map((l) => `${l.label}: ${l.href}`)]
   return [...blocks, signature.join("\n")].join("\n\n") + "\n"
 }
 
-export default function Personal({
-  preview,
-  greeting,
-  body,
-  signoff = "Thanks,",
-  name,
-  tagline,
-  links = [],
-}: PersonalProps) {
-  const paragraphs = paragraphsOf(body)
-
+export default function Personal({ greeting, body, signoff = "Thanks,", name, links = [] }: PersonalProps) {
   return (
-    <Html lang="en">
-      <Head />
-      <Preview>{preview ?? paragraphs[0] ?? ""}</Preview>
-      <Body style={{ margin: 0, padding: 0, backgroundColor: "#ffffff", fontFamily: font }}>
-        <Container style={{ maxWidth: "560px", padding: "0", margin: "0" }}>
-          {greeting && <Text style={para}>{greeting}</Text>}
-          {paragraphs.map((p, i) => (
-            <Text key={i} style={{ ...para, whiteSpace: "pre-line" }}>
-              {p}
-            </Text>
+    <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+      </head>
+      <body>
+        {greeting && <p>{greeting}</p>}
+        {paragraphsOf(body).map((p, i) => (
+          <p key={i}>
+            {p.split("\n").map((line, j) => (
+              <Fragment key={j}>
+                {j > 0 && <br />}
+                {line}
+              </Fragment>
+            ))}
+          </p>
+        ))}
+        <p>
+          {signoff}
+          <br />
+          {name}
+          {links.length > 0 && <br />}
+          {links.map((l, i) => (
+            <Fragment key={l.href}>
+              {i > 0 && " · "}
+              <a href={l.href}>{l.label}</a>
+            </Fragment>
           ))}
-          <Section style={{ marginTop: "24px" }}>
-            <Text style={{ ...para, margin: "0" }}>{signoff}</Text>
-            <Text style={{ ...para, margin: "0", fontWeight: 600 }}>{name}</Text>
-            {tagline && <Text style={muted}>{tagline}</Text>}
-            {links.length > 0 && (
-              <Text style={muted}>
-                {links.map((l, i) => (
-                  <span key={l.href}>
-                    {i > 0 && " · "}
-                    <Link href={l.href} style={{ color: "#4f46e5", textDecoration: "none" }}>
-                      {l.label}
-                    </Link>
-                  </span>
-                ))}
-              </Text>
-            )}
-          </Section>
-        </Container>
-      </Body>
-    </Html>
+        </p>
+      </body>
+    </html>
   )
 }
 

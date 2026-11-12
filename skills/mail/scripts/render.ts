@@ -56,7 +56,8 @@ const props = a.props
   : (Template.PreviewProps ?? {})
 
 const element = createElement(Template, props)
-const html = await render(element)
+// Drop React's marker comments (<!--$-->, <!--html-->...) so the sent HTML stays clean.
+const html = (await render(element)).replace(/<!--[\s\S]*?-->/g, "")
 
 if (a.out) {
   await Bun.write(a.out, html)

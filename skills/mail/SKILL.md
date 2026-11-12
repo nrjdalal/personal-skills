@@ -93,7 +93,7 @@ Run this once after setup or any routing change. Number each body ("Step 1 of 3"
 
 React Email templates live in [`templates/emails/`](templates/emails/). Install once, then render to HTML and send the file.
 
-- `personal` is the default for one-to-one mail: plain and text-first, with a signature of name plus links. Its props are `greeting`, `body` (blank line between paragraphs), `signoff` (default "Thanks,"), `name` and `links`.
+- `personal` is the default for one-to-one mail: raw HTML with only `<p>`, `<br>` and `<a>`, no styles, so it reads like a hand-typed email. Its props are `greeting`, `body` (blank line between paragraphs), `signoff` (default "Thanks,"), `name` and `links`.
 - `notice` is for announcements: a header band, info cards and a button.
 
 ```
