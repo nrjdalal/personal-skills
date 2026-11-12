@@ -25,8 +25,9 @@ const paragraphsOf = (body: string) =>
 /** Plain-text copy laid out like the HTML. */
 export function text({ greeting, body, signoff = "Thanks,", name, links = [] }: PersonalProps) {
   const blocks = [...(greeting ? [greeting] : []), ...paragraphsOf(body)]
-  const signature = [signoff, name, ...links.map((l) => `${l.label}: ${l.href}`)]
-  return [...blocks, signature.join("\n")].join("\n\n") + "\n"
+  const signature = [signoff, name].join("\n")
+  const socials = links.map((l) => `${l.label} (${l.href})`).join(" • ")
+  return [...blocks, signature, ...(socials ? [socials] : [])].join("\n\n") + "\n"
 }
 
 export default function Personal({ greeting, body, signoff = "Thanks,", name, links = [] }: PersonalProps) {
@@ -51,14 +52,17 @@ export default function Personal({ greeting, body, signoff = "Thanks,", name, li
           {signoff}
           <br />
           {name}
-          {links.length > 0 && <br />}
+        </p>
+        {links.length > 0 && (
+          <p>
           {links.map((l, i) => (
             <Fragment key={l.href}>
               {i > 0 && " • "}
               <a href={l.href}>{l.label}</a>
             </Fragment>
           ))}
-        </p>
+          </p>
+        )}
       </body>
     </html>
   )
