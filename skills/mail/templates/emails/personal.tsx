@@ -100,8 +100,8 @@ Personal.PreviewProps = {
   signoff: "Thanks,",
   name: "Neeraj Dalal",
   links: [
-    { label: "Website", href: "https://zerostarter.dev/hire" },
     { label: "GitHub", href: "https://github.com/nrjdalal" },
     { label: "LinkedIn", href: "https://linkedin.com/in/nrjdalal" },
+    { label: "Website", href: "https://zerostarter.dev/hire" },
   ],
 } satisfies PersonalProps
